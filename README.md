@@ -53,6 +53,25 @@ Use **Remove link** to unregister the selected path. This only removes the path 
 
 **A plugin does not appear in the DAW.** Confirm that the folder containing the plugin was registered, run Sync, then check that the DAW scans the appropriate Linux VST directories. Use the app's Status command to inspect Yabridge's report.
 
+## Publishing a GitHub release
+
+The workflow in `.github/workflows/release.yml` builds and publishes a Linux release whenever a version tag matching `v*` is pushed. It uses GitHub's built-in `GITHUB_TOKEN`; no personal access token or signing secret is required for this workflow.
+
+Before publishing, set the same version in `package.json`, `src-tauri/tauri.conf.json`, and `src-tauri/Cargo.toml`. For example, to prepare version `0.1.1`:
+
+1. Run `npm version 0.1.1 --no-git-tag-version` to update `package.json` and `package-lock.json`.
+2. Set `"version": "0.1.1"` in `src-tauri/tauri.conf.json` and `version = "0.1.1"` in `src-tauri/Cargo.toml`.
+3. Run `cargo check --manifest-path src-tauri/Cargo.toml` to update and verify `Cargo.lock`.
+4. Commit and push the version changes.
+5. Create and push the tag:
+
+   ```sh
+   git tag v0.1.1
+   git push origin v0.1.1
+   ```
+
+The workflow checks that the tag and all three project versions match, builds on Ubuntu 24.04, and publishes the Tauri Linux bundle artifacts in a non-draft GitHub Release. If versions do not match, the workflow stops before building. Check the repository's **Actions** tab for build progress and **Releases** for the published downloads.
+
 ## Running from source
 
 From the project directory:

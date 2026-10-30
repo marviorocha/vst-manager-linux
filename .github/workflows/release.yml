@@ -1,0 +1,76 @@
+name: Release Linux app
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish-linux:
+    name: Build and publish Linux release
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Check out source
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache Rust dependencies
+      uses: Swatinem/rust-cache@v2
+
+    - name: Install Tauri Linux dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends -y \
+          build-essential \
+          curl \
+          file \
+          libayatana-appindicator3-dev \
+          libfuse2 \
+          libssl-dev \
+          libwebkit2gtk-4.1-dev \
+          libxdo-dev \
+          librsvg2-dev \
+          wget
+
+    - name: Verify release tag matches app versions
+      shell: bash
+      run: |
+        TAG_VERSION="${GITHUB_REF_NAME#v}"
+        PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+        TAURI_VERSION="$(node -p "require('./src-tauri/tauri.conf.json').version")"
+        CARGO_VERSION="$(cargo metadata --no-deps --format-version 1 | node -e 'let data = ""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => { const pkg = JSON.parse(data).packages.find(item => item.name === "vst_gui"); if (!pkg) process.exit(1); console.log(pkg.version); });')"
+
+        if [[ "$TAG_VERSION" != "$PACKAGE_VERSION" || "$TAG_VERSION" != "$TAURI_VERSION" || "$TAG_VERSION" != "$CARGO_VERSION" ]]; then
+          echo "Release tag version ($TAG_VERSION) must match package.json ($PACKAGE_VERSION), tauri.conf.json ($TAURI_VERSION), and Cargo.toml ($CARGO_VERSION)."
+          exit 1
+        fi
+
+    - name: Install frontend dependencies
+      run: npm ci
+
+    - name: Build and publish release assets
+      uses: tauri-apps/tauri-action@v0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tauriScript: npm run tauri
+        tagName: ${{ github.ref_name }}
+        releaseName: Yabridge VST Manager ${{ github.ref_name }}
+        releaseBody: |
+          Linux release for Yabridge VST Manager ${{ github.ref_name }}.
+
+          Download the package for your distribution from the assets below.
+        releaseDraft: false
+        prerelease: false
