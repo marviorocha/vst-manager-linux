@@ -1,3 +1,5 @@
+[![Release Linux app](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml/badge.svg)](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml)
+
 # Yabridge VST Manager
 
 Yabridge VST Manager is a Linux desktop application for checking Yabridge requirements, registering Windows plugin folders, and syncing those plugins with a Linux DAW.
