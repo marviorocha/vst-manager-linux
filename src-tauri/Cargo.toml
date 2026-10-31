@@ -1,5 +1,5 @@
 [package]
-name = "vst_gui"
+name = "vst-gui"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
