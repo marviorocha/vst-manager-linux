@@ -2,6 +2,8 @@
 
 Yabridge VST Manager is a Linux desktop application for checking Yabridge requirements, registering Windows plugin folders, and syncing those plugins with a Linux DAW.
 
+![Yabridge VST Manager screenshot](src/assets/screen.png)
+
 **Current version:** 0.1.0  
 **Languages:** English (default), Spanish, and Portuguese (Brazil)  
 **Platform:** Linux desktop
