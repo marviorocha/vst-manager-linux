@@ -51,7 +51,7 @@ jobs:
         TAG_VERSION="${GITHUB_REF_NAME#v}"
         PACKAGE_VERSION="$(node -p "require('./package.json').version")"
         TAURI_VERSION="$(node -p "require('./src-tauri/tauri.conf.json').version")"
-        CARGO_VERSION="$(cargo metadata --manifest-path src-tauri/Cargo.toml --no-deps --format-version 1 | node -e 'let data = ""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => { const pkg = JSON.parse(data).packages.find(item => item.name === "vst_gui"); if (!pkg) process.exit(1); console.log(pkg.version); });')"
+        CARGO_VERSION="$(cargo metadata --manifest-path src-tauri/Cargo.toml --no-deps --format-version 1 | node -e 'let data = ""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => { const pkg = JSON.parse(data).packages.find(item => item.name === "vst-gui"); if (!pkg) process.exit(1); console.log(pkg.version); });')"
 
         if [[ "$TAG_VERSION" != "$PACKAGE_VERSION" || "$TAG_VERSION" != "$TAURI_VERSION" || "$TAG_VERSION" != "$CARGO_VERSION" ]]; then
           echo "Release tag version ($TAG_VERSION) must match package.json ($PACKAGE_VERSION), tauri.conf.json ($TAURI_VERSION), and Cargo.toml ($CARGO_VERSION)."
@@ -66,6 +66,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        projectPath: "src-tauri"
         tauriScript: npm run tauri
         tagName: ${{ github.ref_name }}
         releaseName: Yabridge VST Manager ${{ github.ref_name }}
