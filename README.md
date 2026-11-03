@@ -1,4 +1,4 @@
-[![Release Linux app](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml/badge.svg)](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml)
+[![Open Source GNU-3.0](https://img.shields.io/badge/Open%20Source%20Initiative-3DA639.svg?style=for-the-badge&logo=Open-Source-Initiative&logoColor=white)](https://github.com/marviorocha/vst-manager-linux?tab=GPL-3.0-1-ov-file) [![Release Linux app](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml/badge.svg)](https://github.com/marviorocha/vst-manager-linux/actions/workflows/release.yml)
 
 # Yabridge VST Manager
 
